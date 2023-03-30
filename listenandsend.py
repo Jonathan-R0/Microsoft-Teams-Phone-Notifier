@@ -1,6 +1,7 @@
 from winsdk.windows.ui.notifications.management import UserNotificationListener
 from winsdk.windows.ui.notifications import NotificationKinds, KnownNotificationBindings
 from pushbullet import Pushbullet
+from datetime import datetime
 
 import asyncio
 import schedule
@@ -28,7 +29,8 @@ class Notification:
         return self.title == other.title and self.body == other.body
 
     def __str__(self) -> str:
-        return '{' + f"title: {self.title}, body: {self.body}" + '}'
+        now = datetime.now().strftime("%d/%m/%y %H:%M:%S")
+        return '{' + f"timestamp: {now}, title: {self.title}, body: {self.body}" + '}'
 
 class NotificationManager:
     def __init__(self):
