@@ -7,9 +7,6 @@ import constants
 import logging
 import config
 
-if config.LOGGING_FILE:
-    logging.basicConfig(filename=config.LOGGING_FILE, encoding='utf-8', level=logging.DEBUG)
-
 class NotificationManager:
     def __init__(self):
         self.pb = Pushbullet(constants.API_KEY)
@@ -39,5 +36,7 @@ notification_manager = NotificationManager()
 schedule.every(1).seconds.do(notification_manager.search_and_send_notification)
 
 if __name__ == "__main__":
+    if config.LOGGING_FILE:
+        logging.basicConfig(filename=config.LOGGING_FILE, encoding='utf-8', level=logging.DEBUG)
     while True:
         schedule.run_pending()
