@@ -30,6 +30,6 @@ And to generate windows notifications, which may come in handy for testing, run:
 pythen genwindowsnotif.py
 ```
 
-## CanIAddMyOwnWindowManagerNotificationSystem?
+## CanIAddMyOwnNotificationProvider?
 
 Yes. As you may have notice from reading the code, this program catches all the notifications available from the window manager. It is expected that Microsoft Teams notifications can be sent through the default os window manager. Meaning that if you want to add your own notification provider you need to create an enum case in `windowmanager.py` and create a class extending the notification provider interface in `notificationprovider.py`. You can then add your new notification type `config.py` file.
