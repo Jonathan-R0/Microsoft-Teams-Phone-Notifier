@@ -28,6 +28,9 @@ class Notification:
             return False
         return self.title == other.title and self.body == other.body
 
+    def __hash__(self) -> int:
+        return hash(self.title + self.body)
+
     def __str__(self) -> str:
         now = datetime.now().strftime("%d/%m/%y %H:%M:%S")
         return '{' + f"timestamp: {now}, title: {self.title}, body: {self.body}" + '}'
@@ -36,7 +39,7 @@ class NotificationManager:
     def __init__(self):
         self.pb = Pushbullet(constants.API_KEY)
         self.listener = UserNotificationListener.get_current()
-        self.last_notif = None
+        self.past_notifs = set()
         self.logging_stdout = config.LOGGING_STDOUT
         self.logging_to_file = config.LOGGING_FILE is not None
 
@@ -54,9 +57,9 @@ class NotificationManager:
                              .get_text_elements()
             it = iter(text_sequence)
             notif = Notification(it)
-            if (notif == self.last_notif):
+            if notif in self.past_notifs:
                 continue
-            self.last_notif = notif
+            self.past_notifs.add(notif)
             self.send(notif)
             if self.logging_stdout:
                 print(notif)
