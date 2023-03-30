@@ -5,6 +5,11 @@ from pushbullet import Pushbullet
 import asyncio
 import schedule
 import constants
+import logging
+import config
+
+if config.LOGGING_FILE:
+    logging.basicConfig(filename=config.LOGGING_FILE, encoding='utf-8', level=logging.DEBUG)
 
 class Notification:
     def __init__(self, windows_notification):
@@ -23,13 +28,15 @@ class Notification:
         return self.title == other.title and self.body == other.body
 
     def __str__(self) -> str:
-        return f"Title: {self.title}\nBody: {self.body}"
+        return '{' + f"title: {self.title}, body: {self.body}" + '}'
 
 class NotificationManager:
     def __init__(self):
         self.pb = Pushbullet(constants.API_KEY)
         self.listener = UserNotificationListener.get_current()
         self.last_notif = None
+        self.logging_stdout = config.LOGGING_STDOUT
+        self.logging_to_file = config.LOGGING_FILE is not None
 
     async def async_get_notif(self):
         return await self.listener.get_notifications_async(NotificationKinds.TOAST)
@@ -49,6 +56,10 @@ class NotificationManager:
                 continue
             self.last_notif = notif
             self.send(notif)
+            if self.logging_stdout:
+                print(notif)
+            if self.logging_to_file:
+                logging.info(notif)
 
 notification_manager = NotificationManager()
 
