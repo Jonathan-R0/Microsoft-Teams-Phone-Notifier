@@ -57,7 +57,7 @@ class NotificationManager:
                              .get_text_elements()
             it = iter(text_sequence)
             notif = Notification(it)
-            if notif in self.past_notifs:
+            if notif in self.past_notifs or i.app_info.display_info.display_name not in config.APP_FILTER:
                 continue
             self.past_notifs.add(notif)
             self.send(notif)
