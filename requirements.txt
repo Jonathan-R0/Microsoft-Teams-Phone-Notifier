@@ -1,0 +1,4 @@
+pushbullet.py==0.12.0
+schedule==1.1.0
+win10toast==0.9
+winsdk==1.0.0b7
