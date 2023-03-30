@@ -1,4 +1,4 @@
-from notificationprovider import WindowManager
+from windowmanager import WindowManager
 
 LOGGING_STDOUT = True
 LOGGING_FILE = None
