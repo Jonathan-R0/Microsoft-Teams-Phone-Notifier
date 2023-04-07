@@ -2,7 +2,7 @@ from pushbullet import Pushbullet
 from datetime import datetime
 from notificationprovider import *
 
-import schedule, constants, logging, config, sys
+import schedule, constants, logging, config, sys, os
 
 class NotificationManager:
     def __init__(self):
@@ -34,10 +34,16 @@ schedule.every(1).seconds.do(notification_manager.search_and_send_notification)
 
 schedule.every(1).minute.do(lambda: sys.exit() if datetime.now().hour > constants.STOPPING_HOUR else None)
 
+class ConfigurationException(Exception):
+    pass
+
 if __name__ == "__main__":
     if config.ONLY_WEEK_DAYS and datetime.today().weekday() > 4:
         # Where monday is 0 and sunday is 6.
         sys.exit()
+    if not constants.MS_TEAMS_PATH:
+        raise ConfigurationException("MS_TEAMS_VALUE must be a valid path to the executable!")
+    os.startfile(constants.MS_TEAMS_PATH)
     if config.LOGGING_FILE:
         logging.basicConfig(filename=config.LOGGING_FILE, encoding='utf-8', level=logging.DEBUG)
     while True:

@@ -1,3 +1,3 @@
 API_KEY = None
 STOPPING_HOUR: int = 15
-
+MS_TEAMS_PATH = None
