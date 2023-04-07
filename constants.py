@@ -1,1 +1,3 @@
 API_KEY = None
+STOPPING_HOUR: int = 15
+

@@ -6,6 +6,7 @@ import schedule
 import constants
 import logging
 import config
+import sys
 
 class NotificationManager:
     def __init__(self):
@@ -35,7 +36,12 @@ notification_manager = NotificationManager()
 
 schedule.every(1).seconds.do(notification_manager.search_and_send_notification)
 
+schedule.every(1).minute.do(lambda: sys.exit() if datetime.now().hour > constants.STOPPING_HOUR else None)
+
 if __name__ == "__main__":
+    if config.ONLY_WEEK_DAYS and datetime.today().weekday() > 4:
+        # Where monday is 0 and sunday is 6.
+        sys.exit()
     if config.LOGGING_FILE:
         logging.basicConfig(filename=config.LOGGING_FILE, encoding='utf-8', level=logging.DEBUG)
     while True:
