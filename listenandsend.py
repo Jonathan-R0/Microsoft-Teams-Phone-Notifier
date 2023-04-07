@@ -2,11 +2,7 @@ from pushbullet import Pushbullet
 from datetime import datetime
 from notificationprovider import *
 
-import schedule
-import constants
-import logging
-import config
-import sys
+import schedule, constants, logging, config, sys
 
 class NotificationManager:
     def __init__(self):
