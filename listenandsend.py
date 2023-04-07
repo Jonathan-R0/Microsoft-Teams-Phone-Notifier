@@ -2,7 +2,7 @@ from pushbullet import Pushbullet
 from datetime import datetime
 from notificationprovider import *
 
-import schedule, constants, logging, config, sys, os
+import schedule, constants, logging, config, sys, os, psutil
 
 class NotificationManager:
     def __init__(self):
@@ -28,11 +28,18 @@ class NotificationManager:
             if self.logging_to_file:
                 logging.info(notif)
 
+def end_process_on_time():
+    if datetime.now().hour > constants.STOPPING_HOUR:
+        for proc in psutil.process_iter():
+            if proc.name() == constants.MS_TEAMS_PROC:
+                proc.kill()
+        sys.exit()
+
 notification_manager = NotificationManager()
 
 schedule.every(1).seconds.do(notification_manager.search_and_send_notification)
 
-schedule.every(1).minute.do(lambda: sys.exit() if datetime.now().hour > constants.STOPPING_HOUR else None)
+schedule.every(1).minute.do(end_process_on_time)
 
 class ConfigurationException(Exception):
     pass
