@@ -29,7 +29,7 @@ class NotificationManager:
                 logging.info(notif)
 
 def end_process_on_time():
-    if datetime.now().hour > constants.STOPPING_HOUR:
+    if datetime.now().hour >= constants.STOPPING_HOUR:
         for proc in psutil.process_iter():
             if proc.name() == constants.MS_TEAMS_PROC:
                 proc.kill()
