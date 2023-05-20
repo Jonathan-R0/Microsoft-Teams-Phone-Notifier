@@ -4,6 +4,8 @@ from notificationprovider import *
 
 import schedule, constants, logging, config, sys, os, psutil
 
+has_started = False
+
 class NotificationManager:
     def __init__(self):
         self.pb = Pushbullet(constants.API_KEY)
@@ -35,11 +37,18 @@ def end_process_on_time():
                 proc.kill()
         sys.exit()
 
+def start_process_on_time():
+    if not has_started and datetime.now().hour >= constants.STARTING_HOUR:
+        has_started = True
+        os.startfile(constants.MS_TEAMS_PATH)
+
 notification_manager = NotificationManager()
 
 schedule.every(1).seconds.do(notification_manager.search_and_send_notification)
 
 schedule.every(1).minute.do(end_process_on_time)
+
+schedule.every(1).minute.do(start_process_on_time)
 
 class ConfigurationException(Exception):
     pass
@@ -50,7 +59,6 @@ if __name__ == "__main__":
         sys.exit()
     if not constants.MS_TEAMS_PATH:
         raise ConfigurationException("MS_TEAMS_VALUE must be a valid path to the executable!")
-    os.startfile(constants.MS_TEAMS_PATH)
     if config.LOGGING_FILE:
         logging.basicConfig(filename=config.LOGGING_FILE, encoding='utf-8', level=logging.DEBUG)
     while True:
